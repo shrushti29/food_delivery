@@ -1,5 +1,6 @@
 package com.learning.entity;
 
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +13,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -20,45 +22,37 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
 @EqualsAndHashCode
 @ToString
-
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "register")
-public class Register implements Comparable<Register>{
+public class Register {
 	
 	@Id
-	//@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "regId")
-	private String id;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private int id;
 	
-	@Size(max=50)
-	@NotBlank
-	private String name;
-	
+	@Size(max = 50)
 	@Email
 	private String email;
-	
-	@Size(max=100)
+	@Size(max = 100)
+	@NotBlank
+	private String name;
+	@Size(max = 100)
 	@NotBlank
 	private String password;
-	
-	@Size(max=200)
+	@Size(max = 100)
 	@NotBlank
 	private String address;
-
-	@Override
-	public int compareTo(Register o) {
-		// TODO Auto-generated method stub
-		return this.id.compareTo(o.getId());
-	}
 	
+	@JsonIgnore
 	@OneToOne(mappedBy = "register", cascade = CascadeType.ALL)
 	private Login login;
-	
 
 }
+

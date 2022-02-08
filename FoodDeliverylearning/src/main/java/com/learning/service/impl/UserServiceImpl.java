@@ -1,119 +1,92 @@
 package com.learning.service.impl;
 
-import java.util.List;
 
-import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.learning.entity.Login;
 import com.learning.entity.Register;
-
+import com.learning.exception.AlreadyExistsException;
+import com.learning.exception.IdNotFoundException;
+import com.learning.repo.LoginRepository;
 import com.learning.repo.UserRepository;
+import com.learning.service.LoginService;
 import com.learning.service.UserService;
 
-import net.bytebuddy.dynamic.DynamicType.Builder.FieldDefinition.Optional;
-
-public class UserServiceImpl implements UserService {
-
 @Service
-@Transactional
-public class UserService {
+public class UserServiceImpl implements UserService {
 	
 	@Autowired
-	private UserRepository repository;
-//	public List<Register> getUsers() {
-//		return repository.findAll();
-//		
-//	}
-//	
-////	public List<Register> getuserbyid(int id) {
-//public Register getUserById(int id)
-//	{		return repository.findById(id).orElse(null);
-//	}
-//	public Register[] getAllUsers() {
-//		// TODO Auto-generated method stub
-//		List<Register> list = repository.findAll();
-//		Register[] array = new Register[list.size()];
-//		return list.toArray(array);
-//	}
-//	
-//	
-//	//public User updatebook()
-//	public String deleteuserbyid(int id) {
-//		 repository.deleteById(id);
-//		 if (repository==null) {
-//			 return "User Deleted Successfully";
-//		 }
-//		 
-//		 return "sorry user with "+id+"not found";
-//		
-//	}
-//	public Register addUser(Register user) {
-//		return repository.save(user);
-//	}
-//}
+	private UserRepository userRepo;
+	@Autowired
+	private LoginRepository loginRepo;
+	@Autowired
+	private LoginService loginService;
 
-public List<Register> getUsers() {
-	// TODO Auto-generated method stub
-	return repository.findAll();
+	@Override
+	@Transactional(rollbackFor = AlreadyExistsException.class)
+	public Register addUser(Register register) throws AlreadyExistsException {
+		// TODO Auto-generated method stub
+		if(userRepo.existsByEmail(register.getEmail())) {
+			throw new AlreadyExistsException("This record already exists");
+		}
+		Register register2 = userRepo.save(register);
+		if (register2!=null) {
+			Login login = new Login(register2.getEmail(), register2.getPassword(), register2);
+			if (loginRepo.existsByEmail(login.getEmail())) {
+				throw new AlreadyExistsException("This record already exists");
+			}
+			Login result = loginService.addCredentials(login);
+			if (result!=null)
+				return register2;
+			else
+				return null;
+		}
+		else
+			return null;
+	}
+
+	@Override
+	public Optional<List<Register>> getAllUsers() {
+		// TODO Auto-generated method stub
+		return Optional.ofNullable(userRepo.findAll());
+	}
+
+	@Override
+	public Optional<Register> getUserById(int id) throws IdNotFoundException {
+		// TODO Auto-generated method stub
+		Optional<Register> optional = userRepo.findById(id);
+		if (optional.isEmpty()) {
+			throw new IdNotFoundException("Sorry user with "+ id +" not found");
+		}
+		return optional;
+	}
+
+	@Override
+	public Register updateUser(Register register, int id) throws IdNotFoundException {
+		// TODO Auto-generated method stub
+		if (userRepo.findById(id).isEmpty()) {
+			throw new IdNotFoundException("Sorry user with "+ id +" not found");
+		}
+		return userRepo.save(register);
+	}
+
+	@Override
+	@Transactional(rollbackFor = IdNotFoundException.class)
+	public String deleteUser(int id) throws IdNotFoundException {
+		// TODO Auto-generated method stub
+		Optional<Register> optional = this.getUserById(id);
+		if (optional.isEmpty())
+			throw new IdNotFoundException("Sorry user with "+ id +" not found");
+		else {
+			loginService.deleteCredentials(optional.get().getEmail());
+			userRepo.deleteById(id);
+			return "Success";
+		}
+	}
+
 }
-
-public Register getUserById(int id) {
-	// TODO Auto-generated method stub
-	return repository.findById(id).orElse(null);
-}
-
-public Register[] getAllUsers() {
-	// TODO Auto-generated method stub
-	List<Register> list = repository.findAll();
-	Register[] array = new Register[list.size()];
-	return list.toArray(array);
-}
-
-public String deleteuserbyid(int id) {
-	// TODO Auto-generated method stub
-	 repository.deleteById(id);
- if (repository==null) {
-		 return "User Deleted Successfully";
- }
-return null;
-}
-
-public Register addUser(Register user) {
-	// TODO Auto-generated method stub
-	return repository.save(user);
-}
-
-}
-
-@Override
-public List<Register> getUsers() {
-	// TODO Auto-generated method stub
-	return null;
-}
-
-@Override
-public Register getUserById(int id) {
-	// TODO Auto-generated method stub
-	return null;
-}
-
-@Override
-public Register[] getAllUsers() {
-	// TODO Auto-generated method stub
-	return null;
-}
-
-@Override
-public String deleteuserbyid(int id) {
-	// TODO Auto-generated method stub
-	return null;
-}
-
-@Override
-public Register addUser(Register user) {
-	// TODO Auto-generated method stub
-	return null;
-}}
-
