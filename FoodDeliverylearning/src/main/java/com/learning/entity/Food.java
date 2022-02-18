@@ -18,26 +18,20 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
 @EqualsAndHashCode
 @ToString
-
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "food")
-
-	
-	
-	
-
 public class Food {
 	
 	@Id
 	@Column(name = "foodId")
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int foodId;
+	private String id;
 	
 	@NotBlank
 	private String foodName;
@@ -47,7 +41,6 @@ public class Food {
 	private String foodPic;
 	
 	@Enumerated(EnumType.STRING)
-	private EFOOD foodType;
+	private TYPE foodType;
 
 }
-

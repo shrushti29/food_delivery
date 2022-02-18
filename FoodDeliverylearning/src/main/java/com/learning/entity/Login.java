@@ -1,6 +1,5 @@
 package com.learning.entity;
 
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -39,4 +38,5 @@ public class Login {
 	@JsonIgnore
 	@JoinColumn(name = "regId")
 	private Register register;
+
 }

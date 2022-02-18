@@ -1,6 +1,5 @@
 package com.learning.service.impl;
 
-
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.learning.entity.Login;
 import com.learning.exception.IdNotFoundException;
-import com.learning.repo.LoginRepository;
+import com.learning.repository.LoginRepository;
 import com.learning.service.LoginService;
 
 @Service

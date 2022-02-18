@@ -1,6 +1,5 @@
 package com.learning.service;
 
-
 import java.util.List;
 import java.util.Optional;
 
@@ -10,10 +9,10 @@ import com.learning.exception.IdNotFoundException;
 
 public interface UserService {
 	
-	public Register addUser(Register register) throws AlreadyExistsException;
+	public Register addUser(Register user) throws AlreadyExistsException;
 	public Optional<List<Register>> getAllUsers();
-	public Optional<Register> getUserById(int id) throws IdNotFoundException;
-	public Register updateUser(Register register, int id) throws IdNotFoundException;
-	public String deleteUser(int id) throws IdNotFoundException;
+	public Optional<Register> getUserById(Long id) throws IdNotFoundException;
+	public Register updateUser(Register user, Long id) throws IdNotFoundException;
+	public String deleteUser(Long id) throws IdNotFoundException;
 
 }

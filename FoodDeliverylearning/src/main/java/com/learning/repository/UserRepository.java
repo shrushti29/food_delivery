@@ -1,12 +1,16 @@
-package com.learning.repo;
+package com.learning.repository;
+
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.learning.entity.Register;
+
 @Repository
-public interface UserRepository extends JpaRepository<Register, Integer> {
+public interface UserRepository extends JpaRepository<Register, Long> {
 	
+	Optional<Register> findByEmail(String email);
 //	Checking the email exists in the user table
 	Boolean existsByEmail(String email);
 
